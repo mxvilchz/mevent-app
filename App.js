@@ -1,22 +1,26 @@
-import { StatusBar } from 'expo-status-bar'
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import React, { useEffect, useState } from 'react'
+import { Provider as PaperProvider } from 'react-native-paper'
+
+import firebase from './src/database/firebase'
+import Routes from './src/routes'
 
 export default function App () {
+  const [signIn, setSignIn] = useState(false)
+
+  useEffect(() => {
+    firebase.auth.onAuthStateChanged((user) => {
+      console.log(user)
+      if (user) {
+        setSignIn(true)
+      } else {
+        setSignIn(false)
+      }
+    })
+  })
+
   return (
-    <View style={styles.container}>
-       <FontAwesome name="plus" size={22} color="black" />
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <Routes signIn={signIn}/>
+    </PaperProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
